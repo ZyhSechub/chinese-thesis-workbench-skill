@@ -1,0 +1,46 @@
+schema_version: "1.0"
+language: "zh-CN"
+encoding: "utf-8"
+
+purpose: "管理正文引用、文末参考文献与 PDF 来源之间的交叉引用闭环"
+
+sources:
+  extracted_reference_json: "paper-context/literature/reference-extraction.json"
+  citation_crossrefs_md: "paper-context/literature/citation-crossrefs.md"
+  citation_crossrefs_json: "paper-context/literature/citation-crossrefs.json"
+  verified_reference_list: "paper-context/reference-list.md"
+
+body_citations:
+  - citation_id: "CIT-001"
+    chapter: "第1章"
+    section: "1.3 国内外研究现状"
+    claim: "填写正文中需要文献支撑的具体论点"
+    candidate_reference: "填写候选参考文献原文或题名"
+    source_pdf: "papers/example.pdf"
+    relevance: "strong | medium | weak | needs_check"
+    verification_status: "candidate | verified | rejected"
+    final_reference_key: "REF-001"
+    notes: "核验作者、年份、题名、期刊、DOI、页码或 URL"
+
+reference_list:
+  - reference_key: "REF-001"
+    final_text: "按学校要求格式化后的参考文献条目"
+    standard: "GB/T 7714"
+    version: "按学校要求填写，如 2015 或 2025"
+    cited_by:
+      - "CIT-001"
+    metadata_verified:
+      author: false
+      year: false
+      title: false
+      source: false
+      doi_or_url: false
+
+closure_checks:
+  required:
+    - "正文每个引用都有文末参考文献条目"
+    - "文末每个参考文献条目都能回到正文引用位置"
+    - "候选 PDF 抽取结果已核验后才进入最终参考文献"
+    - "弱相关文献不得为了凑数量而引用"
+  unresolved:
+    - "填写待核验或待删除的引用问题"

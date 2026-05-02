@@ -1,0 +1,57 @@
+<mxGraphModel adaptiveColors="auto" dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <mxCell id="title" value="数据库 ER 图模板" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+      <mxGeometry x="460" y="20" width="220" height="40" as="geometry"/>
+    </mxCell>
+    <mxCell id="user" value="主体实体 A&#xa;id PK&#xa;name&#xa;type&#xa;status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="80" y="120" width="170" height="110" as="geometry"/>
+    </mxCell>
+    <mxCell id="diary" value="核心业务实体 B&#xa;id PK&#xa;a_id FK&#xa;title&#xa;content&#xa;created_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="360" y="120" width="170" height="120" as="geometry"/>
+    </mxCell>
+    <mxCell id="tag" value="分类/标签实体 C&#xa;id PK&#xa;name&#xa;category" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="650" y="120" width="170" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="comment" value="明细/记录实体 D&#xa;id PK&#xa;b_id FK&#xa;a_id FK&#xa;content" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="360" y="330" width="170" height="110" as="geometry"/>
+    </mxCell>
+    <mxCell id="behavior" value="行为/日志实体 E&#xa;id PK&#xa;a_id FK&#xa;target_id&#xa;event_type&#xa;weight" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="80" y="330" width="170" height="120" as="geometry"/>
+    </mxCell>
+    <mxCell id="footprint" value="扩展实体 F&#xa;id PK&#xa;a_id FK&#xa;b_id FK&#xa;attribute&#xa;value" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4f8;strokeColor=#6c8ebf;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="650" y="330" width="170" height="120" as="geometry"/>
+    </mxCell>
+    <mxCell id="checklist" value="辅助实体 G&#xa;id PK&#xa;a_id FK&#xa;title&#xa;status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="920" y="120" width="170" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="ledger" value="辅助实体 H&#xa;id PK&#xa;a_id FK&#xa;name&#xa;amount" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=12;" vertex="1" parent="1">
+      <mxGeometry x="920" y="330" width="170" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1" value="1:N 关联" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="user" target="diary">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" value="N:M 分类" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="diary" target="tag">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" value="1:N 明细" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="diary" target="comment">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" value="1:N 产生" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="user" target="behavior">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e5" value="1:N 扩展" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="user" target="footprint">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" value="1:N 派生" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="diary" target="footprint">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" value="1:N 拥有" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="user" target="checklist">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e8" value="1:N 拥有" style="edgeStyle=entityRelationEdgeStyle;html=1;" edge="1" parent="1" source="user" target="ledger">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>

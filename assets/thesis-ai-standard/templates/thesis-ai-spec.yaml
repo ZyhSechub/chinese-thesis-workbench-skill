@@ -1,0 +1,280 @@
+schema_version: "2.0"
+language: "zh-CN"
+encoding: "utf-8"
+
+paper:
+  title: "填写论文题目"
+  type: "本科毕业论文/毕业设计"
+  type_profile: "system_design | empirical_research | survey_analysis | engineering_design | product_design | literature_review | other"
+  school: "填写学校名称"
+  college: "填写学院名称"
+  major: "填写专业名称"
+  author: "填写作者"
+  advisor: "填写导师"
+  submission_date: "YYYY-MM-DD"
+  template_profile: "templates/standard-profile.yaml"
+
+standards:
+  priority:
+    - "学校毕业论文模板和学院细则"
+    - "导师明确要求"
+    - "教育部抽检与学术规范要求"
+    - "学校指定国家标准版本"
+    - "本套件默认规范"
+  reference_style:
+    standard: "GB/T 7714"
+    version: "按学校要求填写，如 2015 或 2025"
+    notes: "2026-07-01 前后可能存在 2015/2025 版过渡，必须按学校通知执行"
+  thesis_writing_reference:
+    standard: "GB/T 7713.1"
+    version: "2025"
+    notes: "作为结构和编排思想参考，不覆盖学校模板"
+
+topic:
+  background: "填写研究背景或设计背景"
+  problem_statement: "填写要解决的问题"
+  objectives:
+    - "目标1"
+    - "目标2"
+  significance:
+    theoretical: "可选：理论或方法价值"
+    practical: "可选：工程、应用或教学价值"
+  scope:
+    included:
+      - "本论文实际覆盖内容"
+    excluded:
+      - "明确不覆盖或不承诺的内容"
+
+research_or_project:
+  domain: "填写研究领域或项目领域"
+  object: "填写研究对象、系统对象或设计对象"
+  methodology:
+    - "填写研究方法、开发方法、实验方法或设计方法"
+  data_sources:
+    - name: "数据/材料来源名称"
+      status: "provided | missing | not_applicable"
+      notes: "说明来源、范围和限制"
+  implementation_sources:
+    code_repository: "填写代码路径或 not_applicable"
+    database_schema: "填写数据库结构材料路径或 not_applicable"
+    api_docs: "填写接口材料路径或 not_applicable"
+    test_reports: "填写测试材料路径或 not_applicable"
+
+roles_or_subjects:
+  - name: "角色、研究对象或实验对象"
+    description: "说明其在论文中的作用"
+    evidence: "材料路径或说明"
+
+technology_or_method_stack:
+  frontend: []
+  backend: []
+  database: []
+  analysis_tools: []
+  experiment_tools: []
+  external_services: []
+  notes: "非系统实现类论文可只填写研究方法、统计工具或设计工具"
+
+chapter_profiles:
+  system_design:
+    recommended_chapters:
+      - "绪论"
+      - "相关技术与开发环境"
+      - "系统需求分析"
+      - "系统总体设计"
+      - "系统详细实现"
+      - "系统测试"
+      - "结论与展望"
+  empirical_research:
+    recommended_chapters:
+      - "绪论"
+      - "理论基础与文献综述"
+      - "研究设计"
+      - "实验或数据分析过程"
+      - "结果与讨论"
+      - "结论与展望"
+  survey_analysis:
+    recommended_chapters:
+      - "绪论"
+      - "文献综述"
+      - "研究设计与数据来源"
+      - "调查结果分析"
+      - "问题与对策"
+      - "结论与展望"
+  engineering_design:
+    recommended_chapters:
+      - "绪论"
+      - "需求与约束分析"
+      - "总体方案设计"
+      - "详细设计"
+      - "实现与验证"
+      - "结论与展望"
+
+chapters:
+  - id: "chapter-1"
+    title: "绪论"
+    purpose: "说明背景、问题、意义、研究内容和论文结构。"
+    required_sections:
+      - "研究背景"
+      - "研究目的与意义"
+      - "国内外研究现状或相关工作"
+      - "研究内容"
+      - "论文结构安排"
+    evidence_required:
+      - "任务书或选题依据"
+      - "参考文献"
+    recommended_outputs:
+      figures: []
+      tables: []
+
+  - id: "chapter-2"
+    title: "理论基础、相关技术或研究方法"
+    purpose: "解释本文使用的理论、技术、方法、工具或开发环境。"
+    required_sections:
+      - "核心概念或理论基础"
+      - "关键技术、方法或工具"
+      - "选型理由或适用性说明"
+      - "实验、开发或运行环境"
+    evidence_required:
+      - "文献依据"
+      - "工具或版本清单"
+    recommended_outputs:
+      figures:
+        - "方法框架图"
+        - "技术架构或工具链图"
+      tables:
+        - "环境与工具版本表"
+
+  - id: "chapter-3"
+    title: "需求分析、研究设计或方案设计"
+    purpose: "说明需求、研究问题、变量、样本、业务流程、约束条件或方案依据。"
+    required_sections:
+      - "可行性、研究问题或设计约束"
+      - "对象、角色、变量或样本说明"
+      - "功能、指标或评价标准"
+      - "流程、模型或方案说明"
+    evidence_required:
+      - "需求材料、问卷、访谈、数据字典、指标说明或设计约束"
+    recommended_outputs:
+      figures:
+        - "业务流程图或研究流程图"
+        - "用例图、模型图或方案结构图"
+      tables:
+        - "需求汇总表、变量定义表或评价指标表"
+
+  - id: "chapter-4"
+    title: "总体设计、实验过程或分析过程"
+    purpose: "说明总体框架、模块、数据、实验流程、分析步骤或设计方案。"
+    required_sections:
+      - "总体框架"
+      - "核心模块、变量、数据或结构设计"
+      - "关键流程或算法"
+      - "数据、接口、实验或设计细节"
+    evidence_required:
+      - "架构材料、数据结构、实验记录、接口清单、设计图或分析脚本"
+    recommended_outputs:
+      figures:
+        - "总体架构图、研究框架图或设计方案图"
+        - "ER 图、流程图、时序图或分析模型图"
+      tables:
+        - "核心数据表、实验参数表或方案比较表"
+
+  - id: "chapter-5"
+    title: "详细实现、结果分析或方案验证"
+    purpose: "说明关键实现、实验结果、数据分析、设计验证和问题讨论。"
+    required_sections:
+      - "关键实现或核心分析"
+      - "结果展示"
+      - "结果解释或验证"
+      - "异常、限制或不足"
+    evidence_required:
+      - "代码路径、运行截图、实验数据、统计结果、验证记录或设计样机材料"
+    recommended_outputs:
+      figures:
+        - "关键界面截图、结果图、流程图或验证图"
+      tables:
+        - "结果汇总表、测试表或对比分析表"
+
+  - id: "chapter-6"
+    title: "测试、讨论或综合评价"
+    purpose: "说明测试环境、测试方法、评价标准、综合讨论和可信度边界。"
+    required_sections:
+      - "测试或评价目标"
+      - "测试环境、数据来源或评价方法"
+      - "测试用例、实验结果或评价结果"
+      - "结果总结与不足"
+    evidence_required:
+      - "测试用例、报告截图、实验记录、统计输出或评价材料"
+    recommended_outputs:
+      figures:
+        - "测试报告截图、结果对比图或评价流程图"
+      tables:
+        - "测试用例表、指标结果表或评价汇总表"
+
+  - id: "conclusion"
+    title: "结论与展望"
+    purpose: "总结实际完成内容、主要结论、不足与后续工作。"
+    required_sections:
+      - "研究或设计总结"
+      - "主要成果"
+      - "不足与展望"
+    evidence_required:
+      - "全文已出现的结果和证据"
+    recommended_outputs:
+      figures: []
+      tables: []
+
+figure_policy:
+  caption_position: "图题置于图下"
+  table_caption_position: "表题置于表上"
+  equation_position: "公式独立成行，编号按学校要求"
+  source_required: true
+  source_types:
+    editable_diagram:
+      - "架构图"
+      - "流程图"
+      - "ER 图"
+      - "用例图"
+      - "时序图"
+      - "模型图"
+      - "结构图"
+    screenshot:
+      - "运行界面"
+      - "实验平台"
+      - "测试报告"
+      - "统计软件输出"
+    table:
+      - "字段表"
+      - "变量定义表"
+      - "测试用例表"
+      - "实验结果表"
+  naming_pattern: "figure-{chapter}-{index}-{english-name}.drawio"
+
+evidence_index:
+  project_evidence: "paper-context/evidence/project-evidence.json"
+  code_structure: "paper-context/evidence/code-structure.md"
+  tech_stack: "paper-context/evidence/tech-stack.md"
+  database_schema: "paper-context/evidence/database-schema.md"
+  api_list: "paper-context/evidence/api-list.md"
+  test_results: "paper-context/evidence/test-results.md"
+  data_dictionary: "paper-context/evidence/data-dictionary.md"
+  reference_list: "paper-context/reference-list.md"
+  screenshot_index: "paper-context/evidence/screenshot-index.md"
+
+ai_rules:
+  must_not_fabricate:
+    - "测试结果"
+    - "实验数据"
+    - "数据库字段"
+    - "接口路径"
+    - "参考文献"
+    - "系统功能"
+    - "调查样本"
+  must_check:
+    - "学校模板优先级"
+    - "章节层级"
+    - "图表编号"
+    - "正文引用"
+    - "术语一致性"
+    - "证据链完整性"
+    - "参考文献引用闭环"
+    - "学术诚信风险"

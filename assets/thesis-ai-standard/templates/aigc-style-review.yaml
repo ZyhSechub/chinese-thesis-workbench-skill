@@ -1,0 +1,60 @@
+schema_version: "1.0"
+language: "zh-CN"
+encoding: "utf-8"
+
+purpose: "记录论文正文的 AIGC 风格风险报告、修改计划与证据边界"
+
+policy:
+  objective: "提升学术表达质量、论证密度和事实可追溯性"
+  not_objective:
+    - "承诺规避检测器"
+    - "编造引用、数据、实验或项目事实"
+    - "为了降低风险而损害论文规范"
+
+inputs:
+  draft_file: "填写待检查正文路径"
+  external_report_file: "可选：AIGC 报告 html/pdf/docx 路径"
+  local_report_md: "paper-context/aigc/aigc-style-report.md"
+  local_report_json: "paper-context/aigc/aigc-style-report.json"
+
+review_workflow:
+  - step: "先生成报告"
+    status: "pending | done | skipped"
+    notes: "先定位高风险段落，不直接大段重写"
+  - step: "确认修改范围"
+    status: "pending | done | skipped"
+    notes: "轻度润色、段落改写、章节改写或终稿检查"
+  - step: "定向改写"
+    status: "pending | done | skipped"
+    notes: "只改高风险段落，保留事实和引用"
+  - step: "复查"
+    status: "pending | done | skipped"
+    notes: "复查公式化表达、证据缺口和引用边界"
+
+risk_patterns:
+  formulaic_theory_start: "依据/基于/根据某理论起笔过多"
+  summary_tail: "由此可见/综上所述/此案例表明等段末套句"
+  rigid_sequence: "首先/其次/再次等过于整齐的枚举"
+  passive_shell: "该设计体现了/该方法基于等被动分析套话"
+  vague_attribution: "研究表明/专家认为但无具体来源"
+  filler_phrase: "值得注意的是/不难发现等空引导"
+  generic_positive: "具有重要意义/前景广阔等空泛评价"
+  repeated_rhythm: "相邻段落结构和句首高度重复"
+
+revision_log:
+  - paragraph: "第X段"
+    risk_level: "low | medium | high"
+    detected_patterns:
+      - "填写命中的模式"
+    action: "delete | rewrite | move_theory | add_source | split_sentence | keep"
+    evidence_boundary: "事实已确认 | needs_source | needs_evidence"
+    revised: false
+    notes: "说明修改理由"
+
+final_checks:
+  - "未新增未核验事实"
+  - "未新增虚构引用"
+  - "未出现 AI 工作流痕迹"
+  - "模糊归因已删除或补来源"
+  - "空泛意义句已改为具体结论、限制或展望"
+  - "改写说明已记录"

@@ -1,0 +1,60 @@
+<mxGraphModel adaptiveColors="auto" dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <mxCell id="title" value="后端分层架构图模板" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+      <mxGeometry x="440" y="20" width="240" height="40" as="geometry"/>
+    </mxCell>
+    <mxCell id="client" value="客户端 / 管理端 / 调用方" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4f8;strokeColor=#6c8ebf;" vertex="1" parent="1">
+      <mxGeometry x="470" y="80" width="180" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="controller" value="Controller 接口层&#xa;路由映射 / 参数接收 / 响应封装" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+      <mxGeometry x="390" y="170" width="340" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="service" value="Service 业务层&#xa;事务控制 / 业务编排 / 规则校验" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="390" y="275" width="340" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="domain" value="Domain 模型层&#xa;实体对象 / DTO / VO / 枚举" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+      <mxGeometry x="390" y="380" width="340" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="mapper" value="Mapper / Repository 数据访问层&#xa;SQL 映射 / 查询封装" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+      <mxGeometry x="390" y="485" width="340" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="infra" value="基础设施层&#xa;数据库 / 缓存 / 文件 / 外部 API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+      <mxGeometry x="390" y="590" width="340" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="auth" value="鉴权与权限&#xa;令牌 / 会话 / 用户上下文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+      <mxGeometry x="80" y="235" width="180" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="exception" value="统一异常处理&#xa;错误码 / 日志 / 返回体" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+      <mxGeometry x="80" y="360" width="180" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="config" value="配置与安全&#xa;跨域 / 文件限制 / 权限" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+      <mxGeometry x="80" y="485" width="180" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1" value="请求" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="client" target="controller">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" value="调用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="controller" target="service">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" value="使用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="service" target="domain">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" value="读写" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="service" target="mapper">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e5" value="访问" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="mapper" target="infra">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" value="拦截" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;" edge="1" parent="1" source="auth" target="controller">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" value="处理异常" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;" edge="1" parent="1" source="exception" target="controller">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e8" value="约束" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;" edge="1" parent="1" source="config" target="service">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>

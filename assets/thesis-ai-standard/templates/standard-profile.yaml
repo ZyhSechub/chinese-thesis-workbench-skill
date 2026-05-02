@@ -1,0 +1,117 @@
+schema_version: "1.0"
+language: "zh-CN"
+encoding: "utf-8"
+
+profile:
+  name: "填写学校或项目标准配置名称"
+  school: "填写学校名称"
+  college: "填写学院名称"
+  major: "填写专业名称"
+  updated_at: "YYYY-MM-DD"
+  status: "draft"
+
+source_priority:
+  - level: 1
+    name: "学校/学院正式论文模板"
+    file_or_url: "填写模板文件路径或网址"
+    enforce: true
+    confirmation_status: "confirmed | needs_confirmation | missing"
+    notes: "字体、页面、标题、目录、页眉页脚、参考文献等以此为准"
+  - level: 2
+    name: "导师或课题组要求"
+    file_or_url: "填写要求来源"
+    enforce: true
+    confirmation_status: "confirmed | needs_confirmation | missing"
+    notes: "章节取舍、重点图表、实验或系统演示范围"
+  - level: 3
+    name: "教育部抽检和学术规范"
+    file_or_url: "https://www.moe.gov.cn/srcsite/A11/s7057/202101/t20210107_509019.html"
+    enforce: true
+    confirmation_status: "baseline"
+    notes: "用于检查选题意义、逻辑质量、专业能力、学术规范和真实性"
+  - level: 4
+    name: "国家标准"
+    file_or_url: "填写学校指定国家标准版本"
+    enforce: false
+    confirmation_status: "fallback | school_adopted | needs_confirmation"
+    notes: "学校没有细化要求时参考"
+  - level: 5
+    name: "本套件通用默认规则"
+    file_or_url: "thesis-ai-standard/02-公开标准与高校规范来源.md"
+    enforce: false
+    confirmation_status: "fallback"
+    notes: "仅作为可替换默认值"
+
+conflict_resolution:
+  rule: "学校模板 > 导师要求 > 教育部/学术规范底线 > 学校指定国家标准 > 本套件默认规则"
+  unresolved:
+    - item: "填写存在冲突或待确认的规则"
+      candidate_sources:
+        - "来源1"
+        - "来源2"
+      chosen_source: "填写最终采用来源或 needs_confirmation"
+      notes: "说明原因"
+
+standard_versions:
+  thesis_writing:
+    name: "GB/T 7713.1"
+    version: "2025"
+    use_policy: "学校未另行规定时作为结构和编排参考"
+  references:
+    name: "GB/T 7714"
+    version: "填写学校要求版本，如 2015 或 2025"
+    use_policy: "必须以学校当前通知为准"
+  punctuation:
+    name: "GB/T 15834"
+    version: "填写学校要求版本或留空"
+    use_policy: "用于中文标点一致性检查"
+
+format_defaults:
+  paper_size: "A4"
+  page_margin: "按学校模板；未知时不自动修改"
+  body_font: "按学校模板；未知时不自动修改"
+  heading_numbering: "按章编号，例如 1、1.1、1.1.1 或 第1章"
+  figure_caption_position: "图题置于图下"
+  table_caption_position: "表题置于表上"
+  equation_numbering: "独立成行，编号右侧，例如 (3-1)"
+  table_style: "三线表优先"
+  reference_citation: "正文引用与文末条目一一闭环"
+
+content_rules:
+  abstract:
+    required: true
+    default_notes:
+      - "说明背景、目的、方法或系统方案、结果或实现内容、结论"
+      - "一般不放图表、公式和参考文献标注"
+  keywords:
+    default_count: "3-5"
+    notes: "术语应覆盖研究对象、方法和应用领域"
+  conclusion:
+    notes:
+      - "总结已完成工作"
+      - "不新增正文没有展开的新功能或实验结果"
+      - "展望只写合理改进方向"
+
+academic_integrity:
+  forbid:
+    - "编造实验数据"
+    - "编造系统测试结果"
+    - "编造参考文献或 DOI"
+    - "编造接口、数据库字段或代码路径"
+    - "在正文暴露 AI 协作过程"
+  require:
+    - "所有图表有证据来源"
+    - "所有测试结论有记录或截图支撑"
+    - "所有参考文献在正文中至少被引用一次，除非学校另有规定"
+
+review_policy:
+  before_ai_generation:
+    - "先读取本文件"
+    - "再读取 thesis-ai-spec.yaml"
+    - "再读取章节证据材料"
+  before_final_delivery:
+    - "检查章节编号和目录"
+    - "检查图表公式编号"
+    - "检查参考文献闭环"
+    - "检查学术诚信风险"
+    - "在 Word 或 PDF 中复核页面效果"

@@ -1,0 +1,112 @@
+schema_version: "2.0"
+language: "zh-CN"
+encoding: "utf-8"
+
+rules:
+  caption:
+    figure: "图题置于图下，例如：图4-1 系统总体架构图"
+    table: "表题置于表上，例如：表4-1 核心数据表设计"
+    equation: "公式独立成行，编号按学校要求，例如：(3-1)"
+  numbering:
+    mode: "按章编号"
+    figure_pattern: "图{chapter}-{index}"
+    table_pattern: "表{chapter}-{index}"
+    equation_pattern: "({chapter}-{index})"
+    continuous_check_required: true
+  source_policy:
+    editable_source_required:
+      - "architecture"
+      - "flowchart"
+      - "use_case"
+      - "er_diagram"
+      - "sequence"
+      - "module"
+      - "model"
+      - "data_structure"
+      - "research_framework"
+    screenshot_allowed:
+      - "ui_screenshot"
+      - "experiment_screenshot"
+      - "test_report"
+      - "software_output"
+    table_source_allowed:
+      - "manual_summary"
+      - "database_schema"
+      - "experiment_data"
+      - "survey_data"
+      - "test_case"
+  validation:
+    - "正文首次提及或解释后再插入图表"
+    - "图表编号按章节连续"
+    - "图表标题与正文术语一致"
+    - "每个导出图片都应保留源文件或来源说明"
+    - "截图不得含有无关桌面、隐私信息或调试脏数据"
+    - "表格列名、单位、数据来源必须明确"
+
+figures:
+  - id: "图X-1"
+    title: "填写图题"
+    chapter: "X"
+    type: "architecture | flowchart | er_diagram | sequence | use_case | model | data_structure | ui_screenshot | experiment_screenshot | test_report | other"
+    purpose: "说明该图解决什么表达问题"
+    source_kind: "drawio | mermaid | screenshot | chart_export | software_output | other"
+    source_file: "drawio/figure-X-1-name.drawio"
+    export_file: "exports/figure-X-1-name.png"
+    evidence:
+      - "填写对应代码、数据、实验、截图或设计材料路径"
+    first_mentioned_in: "第X章第X节，填写正文位置"
+    status: "planned | drafted | checked | inserted | deprecated"
+    risk_notes: "填写风险，例如术语未统一、数据待确认、截图需重截"
+
+tables:
+  - id: "表X-1"
+    title: "填写表题"
+    chapter: "X"
+    type: "environment | requirement | variable_definition | database_schema | test_case | experiment_result | comparison | other"
+    purpose: "说明该表服务于哪段论证"
+    source_file: "paper-context/evidence/source-name.md"
+    columns:
+      - "列名1"
+      - "列名2"
+      - "列名3"
+    evidence:
+      - "填写数据来源或材料路径"
+    first_mentioned_in: "第X章第X节，填写正文位置"
+    status: "planned | drafted | checked | inserted | deprecated"
+    risk_notes: "填写风险，例如数据来源不完整、单位未标注"
+
+equations:
+  - id: "(X-1)"
+    title: "可选：公式名称或用途"
+    chapter: "X"
+    expression_source: "填写公式来源、推导材料或参考文献"
+    variables:
+      - symbol: "x"
+        meaning: "变量含义"
+        unit: "单位或 none"
+    first_mentioned_in: "第X章第X节，填写正文位置"
+    status: "planned | checked | inserted | deprecated"
+    risk_notes: "填写风险，例如变量未解释、编号不一致"
+
+screenshot_checklist:
+  required:
+    - "分辨率足够，插入 Word 后仍清晰"
+    - "裁剪掉无关边框、地址栏、桌面和通知"
+    - "截图中的数据与正文描述一致"
+    - "账号、手机号、密钥、隐私信息已脱敏"
+    - "截图文件名与图号一致"
+
+diagram_style_defaults:
+  font: "按学校模板；未知时使用宋体或微软雅黑"
+  line_width: "1.5-2 px"
+  connector: "正交连接线优先"
+  fill_policy:
+    primary_module: "浅蓝或蓝灰"
+    data_layer: "浅绿"
+    external_service: "浅黄"
+    risk_or_exception: "浅红"
+  avoid:
+    - "复杂渐变"
+    - "装饰性阴影"
+    - "无法编辑的模糊截图"
+    - "超过一行的长段落节点"

@@ -1,0 +1,50 @@
+schema_version: "1.0"
+language: "zh-CN"
+encoding: "utf-8"
+
+review_topic:
+  thesis_title: "填写论文题目"
+  keywords:
+    - "关键词1"
+    - "关键词2"
+  research_questions:
+    - "研究问题1"
+
+sources:
+  pdf_folder: "papers/"
+  extracted_reference_json: "paper-context/literature/reference-extraction.json"
+  extracted_reference_md: "paper-context/literature/reference-extraction.md"
+  citation_crossrefs_md: "paper-context/literature/citation-crossrefs.md"
+  citation_crossrefs_json: "paper-context/literature/citation-crossrefs.json"
+  citation_crossref_register: "thesis-ai-standard/templates/citation-crossref-register.yaml"
+
+themes:
+  - id: "theme-1"
+    name: "主题一"
+    purpose: "说明这一组文献支撑论文的哪个问题"
+    candidate_references:
+      - title_or_ref: "填写文献题名或原始参考文献"
+        source_pdf: "papers/example.pdf"
+        relevance: "strong | medium | weak | needs_check"
+        used_in_chapter: "第1章/第2章/其他"
+        claim_supported: "该文献支撑的具体论点"
+        notes: "待核验作者、年份、DOI、期刊等"
+
+gap_analysis:
+  existing_work_summary: "概括已有研究"
+  limitations:
+    - "已有研究不足1"
+  thesis_connection: "说明本文如何回应这些不足"
+
+integrity_rules:
+  must_verify:
+    - "作者"
+    - "年份"
+    - "题名"
+    - "期刊/会议/出版社"
+    - "DOI 或 URL，如学校要求"
+  must_not:
+    - "编造 DOI"
+    - "编造作者或年份"
+    - "引用与正文论点无关的文献"
+    - "把 PDF 提取候选项直接当最终参考文献"

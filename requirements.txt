@@ -1,0 +1,5 @@
+pdfplumber
+pypdf
+PyPDF2
+python-docx
+PyYAML
