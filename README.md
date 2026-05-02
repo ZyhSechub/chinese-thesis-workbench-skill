@@ -83,29 +83,27 @@
 
 ## 架构
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                  chinese-thesis-workbench                 │
-├────────────────────┬────────────────────────────────────┤
-│     治理侧          │           交付侧                    │
-│  paper-context/     │        paper-output/               │
-│                    │                                    │
-│  workflow/         │  论文标题.md                        │
-│  evidence/         │  论文标题.docx                      │
-│  literature/       │  论文标题-附件.docx                  │
-│  aigc/            │  论文标题-image-map.json             │
-│  word-comments/    │  论文标题-文献核验清单.json           │
-│                    │  figures/                           │
-│                    │  screenshots/                       │
-├────────────────────┴────────────────────────────────────┤
-│                    接口层（结构化配置）                      │
-│  standard-profile.yaml  │  thesis-ai-spec.yaml           │
-│  figure-registry.yaml   │  (thesis-ai-standard/templates/)│
-├─────────────────────────────────────────────────────────┤
-│                    融合来源                                │
-│  thesis-standardizer（骨架）  +  lunwen（中文成稿引擎）      │
-└─────────────────────────────────────────────────────────┘
-```
+| 层级 | 模块 / 目录 | 说明 |
+|---|---|---|
+| 项目根目录 | `chinese-thesis-workbench` | 中文论文写作工作台 |
+| 治理侧 | `paper-context/` | 论文上下文与项目背景材料 |
+| 治理侧 | `workflow/` | 写作流程、任务拆分与执行记录 |
+| 治理侧 | `evidence/` | 实验依据、数据证据、结果支撑材料 |
+| 治理侧 | `literature/` | 文献资料、引用来源与阅读记录 |
+| 治理侧 | `aigc/` | AIGC 使用记录、提示词与生成过程管理 |
+| 治理侧 | `word-comments/` | Word 批注、修改建议与审阅记录 |
+| 交付侧 | `paper-output/` | 最终论文交付文件目录 |
+| 交付侧 | `论文标题.md` | Markdown 格式论文正文 |
+| 交付侧 | `论文标题.docx` | Word 格式论文正文 |
+| 交付侧 | `论文标题-附件.docx` | 附件材料 |
+| 交付侧 | `论文标题-image-map.json` | 图片映射关系记录 |
+| 交付侧 | `论文标题-文献核验清单.json` | 文献核验清单 |
+| 交付侧 | `figures/` | 论文插图、流程图、结构图等 |
+| 交付侧 | `screenshots/` | 系统截图、实验截图等 |
+| 接口层（结构化配置） | `standard-profile.yaml` | 论文标准配置文件 |
+| 接口层（结构化配置） | `thesis-ai-spec.yaml` | AI 辅助写作规范配置 |
+| 接口层（结构化配置） | `figure-registry.yaml` | 图片注册与编号管理配置 |
+| 接口层（结构化配置） | `thesis-ai-standard/templates/` | 论文模板与规范模板目录 |
 
 **设计原则**：正文写作只能消费 `thesis-ai-spec.yaml`、`figure-registry.yaml` 和 `paper-context/evidence/` 中的结构化事实。不允许直接从 README、旧说明文档或猜测中扩写正文。
 
