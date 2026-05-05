@@ -397,7 +397,7 @@ MIT License
 
 ## 致谢
 
-本 skill 基于以下两个开源项目融合而成，特此致谢：
+本 skill 参考了以下两个项目，特此致谢：
 
 - **[xiaou61/thesis-skills](https://github.com/xiaou61/thesis-skills)** — 提供 thesis-standardizer 标准与证据骨架，包括标准解析、证据构建、质量门禁、AIGC 风格治理、工作流状态管理和 Word 批注修订等核心能力。
 - **[Doryoku1223/lunwen-skill](https://github.com/Doryoku1223/lunwen-skill)** — 提供中文论文成稿引擎，包括样文分析、章节控字、Mermaid/PlantUML 图表、Playwright 截图闭环和 DOCX 格式化交付等核心能力。
