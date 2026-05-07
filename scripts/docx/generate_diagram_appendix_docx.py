@@ -12,7 +12,10 @@ from docx.shared import Cm, Pt
 
 
 CODE_BLOCK_RE = re.compile(r"^```(mermaid|plantuml)\s*$", re.I)
-CAPTION_RE = re.compile(r"^(图\s*\d+(?:\.\d+)?\s+.+)$")
+RAW_PLANTUML_START_RE = re.compile(r"^@startuml\b", re.I)
+RAW_PLANTUML_END_RE = re.compile(r"^@enduml\b", re.I)
+UNICODE_CAPTION_RE = re.compile(r"^(\u56fe\s*\d+(?:[.-]\d+)?\s+.+)$")
+CAPTION_RE = re.compile(r"^(图\s*\d+(?:[.-]\d+)?\s+.+)$")
 
 
 def set_run_fonts(run, east_asia_font: str, latin_font: str, size_pt: float, *, bold: bool = False) -> None:
@@ -56,9 +59,18 @@ def extract_blocks(markdown_path: Path) -> list[dict[str, str]]:
     lang = ""
     buffer: list[str] = []
     pending: list[dict[str, str]] = []
+    in_raw_plantuml = False
 
     for line in lines:
         stripped = line.strip()
+        if in_raw_plantuml:
+            buffer.append(line.rstrip())
+            if RAW_PLANTUML_END_RE.match(stripped):
+                pending.append({"lang": "plantuml", "code": "\n".join(buffer)})
+                in_raw_plantuml = False
+                buffer = []
+            continue
+
         if in_code:
             if stripped.startswith("```"):
                 pending.append({"lang": lang.lower(), "code": "\n".join(buffer)})
@@ -76,7 +88,12 @@ def extract_blocks(markdown_path: Path) -> list[dict[str, str]]:
             buffer = []
             continue
 
-        caption_match = CAPTION_RE.match(stripped)
+        if RAW_PLANTUML_START_RE.match(stripped):
+            in_raw_plantuml = True
+            buffer = [line.rstrip()]
+            continue
+
+        caption_match = UNICODE_CAPTION_RE.match(stripped) or CAPTION_RE.match(stripped)
         if caption_match and pending:
             item = pending.pop(0)
             item["caption"] = caption_match.group(1).strip()

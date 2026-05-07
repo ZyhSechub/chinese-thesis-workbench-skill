@@ -81,6 +81,8 @@ def main() -> int:
         for path in written_logs:
             print(f"- {path}")
     print("Next files to fill:")
+    if not args.no_workflow_logs:
+        print(f"- {target_dir / 'paper-context' / 'workflow' / 'user-dashboard.md'}")
     print(f"- {dst / 'templates' / 'standard-profile.yaml'}")
     print(f"- {dst / 'templates' / 'thesis-ai-spec.yaml'}")
     print(f"- {dst / 'templates' / 'figure-registry.yaml'}")

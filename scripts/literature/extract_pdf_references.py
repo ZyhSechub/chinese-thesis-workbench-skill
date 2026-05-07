@@ -59,16 +59,6 @@ def extract_text(pdf: Path) -> tuple[str, str]:
         errors.append(f"pypdf: {exc}")
 
     try:
-        import PyPDF2  # type: ignore
-
-        reader = PyPDF2.PdfReader(str(pdf))
-        text = "\n".join(page.extract_text() or "" for page in reader.pages)
-        if text.strip():
-            return text, "PyPDF2"
-    except Exception as exc:  # pragma: no cover - environment dependent
-        errors.append(f"PyPDF2: {exc}")
-
-    try:
         import pdfplumber  # type: ignore
 
         with pdfplumber.open(str(pdf)) as doc:
@@ -79,7 +69,7 @@ def extract_text(pdf: Path) -> tuple[str, str]:
         errors.append(f"pdfplumber: {exc}")
 
     raise RuntimeError(
-        "Could not extract text. Install pypdf, PyPDF2, or pdfplumber. "
+        "Could not extract text. Install pypdf or pdfplumber. "
         + " | ".join(errors)
     )
 

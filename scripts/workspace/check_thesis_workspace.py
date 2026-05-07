@@ -23,12 +23,15 @@ REQUIRED_FILES = [
     "templates/standard-profile.yaml",
     "templates/thesis-ai-spec.yaml",
     "templates/figure-registry.yaml",
-    "templates/literature-review-matrix.yaml",
-    "templates/citation-crossref-register.yaml",
     "templates/aigc-style-review.yaml",
     "templates/chapter-section-template.md",
     "templates/ai-prompts.md",
     "templates/ai-review-rubric.json",
+]
+
+OPTIONAL_FILES = [
+    "templates/literature-review-matrix.yaml",
+    "templates/citation-crossref-register.yaml",
 ]
 
 DRAWIO_FILES = [
@@ -62,6 +65,15 @@ def check_required(base: Path, rel_path: str) -> CheckResult:
         return CheckResult("error", rel_path, "missing required file")
     if path.is_file() and path.stat().st_size == 0:
         return CheckResult("error", rel_path, "file is empty")
+    return CheckResult("ok", rel_path, "present")
+
+
+def check_optional(base: Path, rel_path: str) -> CheckResult:
+    path = base / rel_path
+    if not path.exists():
+        return CheckResult("ok", rel_path, "optional workflow template absent; skipped")
+    if path.is_file() and path.stat().st_size == 0:
+        return CheckResult("warn", rel_path, "optional workflow template is empty")
     return CheckResult("ok", rel_path, "present")
 
 
@@ -142,6 +154,11 @@ def main() -> int:
             result = check_required(base, rel_path)
             results.append(result)
             if result.status == "ok" and rel_path.endswith((".json", ".yaml", ".yml", ".drawio")):
+                results.append(check_parse(base, rel_path))
+        for rel_path in OPTIONAL_FILES:
+            result = check_optional(base, rel_path)
+            results.append(result)
+            if result.status == "ok" and rel_path.endswith((".json", ".yaml", ".yml")):
                 results.append(check_parse(base, rel_path))
         results.extend(inspect_core_fields(base))
 

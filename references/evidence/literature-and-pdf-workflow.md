@@ -33,6 +33,21 @@ The script extracts candidate reference sections. Treat output as raw evidence. 
 
 If a topic outline exists, create a citation cross-reference index:
 
+`paper-context/topics.md` is a lightweight topic file. It can be drafted from the confirmed outline, `thesis-ai-spec.yaml`, or user-provided keywords. Use one topic per bullet; include methods, domain terms, chapter names, and known acronyms that should guide citation placement.
+
+Example:
+
+```markdown
+# Thesis Topics
+
+- Chapter 1: research background; domestic and international status; problem definition
+- Chapter 2: key theories; core technologies; evaluation methods
+- Chapter 3: requirement analysis; system architecture; database design
+- Chapter 4: implementation modules; algorithms; user workflow
+- Chapter 5: testing; experiment results; comparison baseline
+- Keywords: recommender system; collaborative filtering; Vue; Spring Boot
+```
+
 ```powershell
 python .\scripts\literature\build_literature_crossrefs.py .\paper-context\literature\reference-extraction.json --topics .\paper-context\topics.md --out .\paper-context\literature\citation-crossrefs.md --json-out .\paper-context\literature\citation-crossrefs.json
 ```

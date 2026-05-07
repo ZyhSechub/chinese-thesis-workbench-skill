@@ -33,8 +33,10 @@ cleanup_inline_markdown = _markdown_utils.cleanup_inline_markdown
 SPECIAL_CENTERED_HEADINGS = {
     "摘要": "abstract_heading_cn",
     "abstract": "abstract_heading_en",
+    "目录": "toc_heading",
     "参考文献": "references_heading",
     "致谢": "ack_heading",
+    "附录": "appendix_heading",
 }
 
 ALIGNMENT_MAP = {
@@ -44,7 +46,6 @@ ALIGNMENT_MAP = {
     "justify": WD_ALIGN_PARAGRAPH.JUSTIFY,
     "distribute": WD_ALIGN_PARAGRAPH.DISTRIBUTE,
 }
-
 
 def default_style_profile() -> dict[str, Any]:
     return {
@@ -61,9 +62,11 @@ def default_style_profile() -> dict[str, Any]:
                 bold=True,
                 page_break_before=True,
             ),
+            "toc_heading": centered_style("黑体", "Times New Roman", 18, bold=True, page_break_before=True),
             "references_heading": centered_style("黑体", "Times New Roman", 18, bold=True, page_break_before=True),
             "ack_heading": centered_style("黑体", "Times New Roman", 18, bold=True, page_break_before=True),
-            "body_cn": paragraph_style("宋体", "Times New Roman", 10.5, first_line_indent=21),
+            "appendix_heading": centered_style("黑体", "Times New Roman", 18, bold=True, page_break_before=True),
+            "body_cn": paragraph_style("宋体", "Times New Roman", 12, first_line_indent=24),
             "body_en": paragraph_style("Times New Roman", "Times New Roman", 12, first_line_indent=21),
             "keywords_cn_label": run_style("黑体", "Times New Roman", 12, bold=True),
             "keywords_cn_content": run_style("宋体", "Times New Roman", 12),
@@ -74,6 +77,7 @@ def default_style_profile() -> dict[str, Any]:
             "table_caption": centered_style("宋体", "Times New Roman", 10.5, line_spacing=1, line_spacing_rule="single"),
             "table_text": centered_style("宋体", "Times New Roman", 10.5),
             "references_body": paragraph_style("宋体", "Times New Roman", 10.5, first_line_indent=-21, left_indent=21),
+            "equation": centered_style("Times New Roman", "Times New Roman", 12, line_spacing=1.25),
             "missing_asset": centered_style("楷体", "Times New Roman", 10.5),
             "code": paragraph_style("Consolas", "Consolas", 9, first_line_indent=0),
         }
@@ -145,15 +149,6 @@ def run_style(east_asia_font: str, latin_font: str, size_pt: float, *, bold: boo
     }
 
 
-def infer_fonts(style: dict[str, Any], fallback: dict[str, Any]) -> dict[str, Any]:
-    font = style.get("font")
-    if font and "east_asia_font" not in style:
-        style["east_asia_font"] = font
-    if font and "latin_font" not in style:
-        style["latin_font"] = font if re.search(r"[A-Za-z]", str(font)) and not re.search(r"[\u4e00-\u9fff]", str(font)) else fallback["latin_font"]
-    return style
-
-
 def deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
     merged = json.loads(json.dumps(base))
     for key, value in override.items():
@@ -164,37 +159,15 @@ def deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]
     return merged
 
 
-def load_style_profile(path: Path | None) -> dict[str, Any]:
-    profile = default_style_profile()
-    if path is None or not path.exists():
-        return profile
+def load_style_profile() -> dict[str, Any]:
+    return default_style_profile()
 
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    if "styles" not in raw:
-        raw = {"styles": raw}
-    profile = deep_merge(profile, raw)
 
-    styles = profile["styles"]
-    fallback_map = default_style_profile()["styles"]
-    for name, style in list(styles.items()):
-        if isinstance(style, dict):
-            styles[name] = infer_fonts(style, fallback_map.get(name, fallback_map["body_cn"]))
-
-    # Allow simplified analyzer output to drive keyword/caption styles.
-    if "keywords_cn" in styles:
-        styles["keywords_paragraph"] = deep_merge(styles["keywords_paragraph"], styles["keywords_cn"])
-        styles["keywords_cn_label"] = deep_merge(styles["keywords_cn_label"], styles["keywords_cn"])
-        styles["keywords_cn_content"] = deep_merge(styles["keywords_cn_content"], styles["keywords_cn"])
-    if "keywords_en" in styles:
-        styles["keywords_paragraph"] = deep_merge(styles["keywords_paragraph"], styles["keywords_en"])
-        styles["keywords_en_label"] = deep_merge(styles["keywords_en_label"], styles["keywords_en"])
-        styles["keywords_en_content"] = deep_merge(styles["keywords_en_content"], styles["keywords_en"])
-    if "figure_caption" in styles:
-        styles["figure_caption"] = infer_fonts(styles["figure_caption"], fallback_map["figure_caption"])
-    if "table_caption" in styles:
-        styles["table_caption"] = infer_fonts(styles["table_caption"], fallback_map["table_caption"])
-
-    return profile
+def apply_default_page_setup(section) -> None:
+    section.top_margin = Cm(2.54)
+    section.bottom_margin = Cm(2.54)
+    section.left_margin = Cm(3.17)
+    section.right_margin = Cm(3.17)
 
 
 def set_run_fonts(run, east_asia_font: str, latin_font: str, size_pt: float, *, bold: bool = False) -> None:
@@ -211,16 +184,21 @@ def set_run_fonts(run, east_asia_font: str, latin_font: str, size_pt: float, *, 
     r_fonts.set(qn("w:hAnsi"), latin_font)
 
 
+def _safe_pt(style: dict[str, Any], key: str, default: float = 0.0) -> Pt:
+    value = style.get(key)
+    return Pt(value if value is not None else default)
+
+
 def apply_paragraph_style(paragraph, style: dict[str, Any]) -> None:
     paragraph.alignment = ALIGNMENT_MAP.get(style.get("alignment", "left"), WD_ALIGN_PARAGRAPH.LEFT)
     paragraph.paragraph_format.line_spacing_rule = (
         WD_LINE_SPACING.SINGLE if style.get("line_spacing_rule") == "single" else WD_LINE_SPACING.MULTIPLE
     )
-    paragraph.paragraph_format.line_spacing = style.get("line_spacing", 1.25)
-    paragraph.paragraph_format.first_line_indent = Pt(style.get("first_line_indent_pt", 0))
-    paragraph.paragraph_format.left_indent = Pt(style.get("left_indent_pt", 0))
-    paragraph.paragraph_format.space_before = Pt(style.get("space_before_pt", 0))
-    paragraph.paragraph_format.space_after = Pt(style.get("space_after_pt", 0))
+    paragraph.paragraph_format.line_spacing = style.get("line_spacing") or 1.25
+    paragraph.paragraph_format.first_line_indent = _safe_pt(style, "first_line_indent_pt")
+    paragraph.paragraph_format.left_indent = _safe_pt(style, "left_indent_pt")
+    paragraph.paragraph_format.space_before = _safe_pt(style, "space_before_pt")
+    paragraph.paragraph_format.space_after = _safe_pt(style, "space_after_pt")
     if style.get("page_break_before"):
         add_page_break_before(paragraph)
     for run in paragraph.runs:
@@ -319,14 +297,38 @@ def apply_keyword_runs(paragraph, label: str, content: str, styles: dict[str, An
         )
 
 
-def build_doc(source: Path, image_map: dict[str, Path], profile: dict[str, Any]) -> Document:
+def extract_formula_text(stripped: str) -> str | None:
+    if stripped.startswith("$$") and stripped.endswith("$$") and len(stripped) > 4:
+        return stripped[2:-2].strip()
+    return None
+
+
+def add_formula(
+    doc: Document,
+    formula_text: str,
+    image_map: dict[str, Path],
+    styles: dict[str, Any],
+    formula_mode: str,
+) -> None:
+    image_path = image_map.get(formula_text)
+    if formula_mode == "formula_image" and image_path and image_path.exists():
+        add_image(doc, image_path)
+        return
+    paragraph = doc.add_paragraph()
+    paragraph.add_run(formula_text)
+    apply_paragraph_style(paragraph, styles["equation"])
+
+
+def build_doc(
+    source: Path,
+    image_map: dict[str, Path],
+    profile: dict[str, Any],
+    *,
+    formula_mode: str = "latex_text",
+) -> Document:
     styles = profile["styles"]
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2.54)
-    section.bottom_margin = Cm(2.54)
-    section.left_margin = Cm(3.17)
-    section.right_margin = Cm(3.17)
+    apply_default_page_setup(doc.sections[0])
 
     lines = source.read_text(encoding="utf-8").splitlines()
     current_section = ""
@@ -364,6 +366,27 @@ def build_doc(source: Path, image_map: dict[str, Path], profile: dict[str, Any])
         if stripped.startswith("```"):
             in_code = True
             code_lang = stripped[3:].strip().lower()
+            index += 1
+            continue
+
+        if stripped == "$$":
+            formula_lines = []
+            index += 1
+            while index < len(lines) and lines[index].strip() != "$$":
+                formula_lines.append(lines[index].rstrip())
+                index += 1
+            if index < len(lines) and lines[index].strip() == "$$":
+                index += 1
+            formula_text = "\n".join(formula_lines).strip()
+            if formula_text:
+                add_formula(doc, formula_text, image_map, styles, formula_mode)
+                seen_content = True
+            continue
+
+        formula_text = extract_formula_text(stripped)
+        if formula_text:
+            add_formula(doc, formula_text, image_map, styles, formula_mode)
+            seen_content = True
             index += 1
             continue
 
@@ -480,17 +503,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("target", type=Path)
     parser.add_argument("legacy_image_map", nargs="?", type=Path, help="Optional image map for backward compatibility.")
     parser.add_argument("--image-map", dest="image_map", type=Path, default=None)
-    parser.add_argument("--style-profile", dest="style_profile", type=Path, default=None)
+    parser.add_argument(
+        "--formula-mode",
+        choices=["latex_text", "formula_image"],
+        default="latex_text",
+        help="Keep formula source text or insert a matching formula image from image-map.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     image_map_path = args.image_map or args.legacy_image_map
-    profile = load_style_profile(args.style_profile)
+    profile = load_style_profile()
     image_map = load_image_map(image_map_path)
     args.target.parent.mkdir(parents=True, exist_ok=True)
-    document = build_doc(args.source, image_map, profile)
+    document = build_doc(args.source, image_map, profile, formula_mode=args.formula_mode)
     document.save(args.target)
     print(args.target)
     return 0

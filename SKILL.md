@@ -13,23 +13,24 @@ The workbench has two sides:
 
 - Governance side: `paper-context/` stores workflow state, standards, evidence, literature, AIGC reports, and Word comment revisions.
 - Delivery side: `paper-output/` stores thesis Markdown, DOCX, appendix DOCX, figures, screenshots, image maps, and reference verification artifacts.
+- User-facing visibility and decision side: `paper-context/workflow/user-dashboard.md` summarizes current progress, missing materials, user decisions needed, and the next recommended action. `paper-context/workflow/content-decisions.md` records optional content emphasis and exclusion decisions when candidate content is available. `paper-context/workflow/blocker-report.md` records the latest blocker, options, recommendation, and limited-continuation status. `paper-context/workflow/user-decisions.md` records user-approved choices that affect scope, evidence, standards, outline, delivery, or limitations. These files improve transparency; they do not override standards, evidence, or delivery quality gates.
 
 ## Required Workflow
 
 Run the workflow in this order unless the user is only asking for a narrow inspection or revision:
 
-1. `intake_materials`: collect materials and record gaps in `paper-context/workflow/material-inventory.md`.
+1. `intake_materials`: collect materials and record priority, gaps, missing impact, continuation limits, and user next steps in `paper-context/workflow/material-inventory.md`.
 2. `init_workspace`: initialize `thesis-ai-standard/`, `paper-context/`, and workflow logs.
 3. `resolve_standards`: fill `thesis-ai-standard/templates/standard-profile.yaml`.
-4. `analyze_sample_and_template`: analyze school templates and sample papers before drafting.
+4. `analyze_sample_and_template`: normalize school template and sample-paper parser outputs into lightweight analysis reports, outline suggestions, and word budgets before drafting; parser output does not drive DOCX formatting.
 5. `build_evidence`: extract project facts into `paper-context/evidence/`.
-6. `stop_and_report`: stop whenever evidence, standards, figures, citations, or DOCX delivery cannot be verified.
+6. `stop_and_report`: stop or limit only the affected scope whenever evidence, standards, figures, citations, or DOCX delivery cannot be verified; record options in `blocker-report.md`.
 7. `build_thesis_spec`: fill `thesis-ai-standard/templates/thesis-ai-spec.yaml`.
 8. `build_figure_registry`: fill `thesis-ai-standard/templates/figure-registry.yaml`.
-9. `confirm_outline`: confirm chapter structure, word counts, and style before writing.
+9. `confirm_outline`: confirm chapter structure, word counts, sample/template observations, and any available content emphasis/exclusion decisions before writing.
 10. `draft_chapters`: write only from confirmed structured facts and evidence.
 11. `produce_assets`: generate or collect figures, diagrams, screenshots, tables, and appendix sources.
-12. `produce_docx`: generate main DOCX and appendix DOCX into `paper-output/`.
+12. `produce_docx`: generate main DOCX and appendix DOCX into `paper-output/` using the built-in default thesis format.
 13. `quality_gates`: run standards, evidence, reference, figure, DOCX, and AIGC checks.
 14. `delivery_report`: report outputs, limitations, remaining human decisions, and verification evidence.
 
@@ -37,7 +38,7 @@ Run the workflow in this order unless the user is only asking for a narrow inspe
 
 ## Phase + Status State Model
 
-Use this two-layer state model in `paper-context/workflow/workflow-status.md`:
+Use this two-layer state model in `paper-context/workflow/workflow-status.md`, and mirror the user-facing summary in `paper-context/workflow/user-dashboard.md`:
 
 | Field | Allowed values |
 | --- | --- |
@@ -45,6 +46,15 @@ Use this two-layer state model in `paper-context/workflow/workflow-status.md`:
 | `status` | `pending`, `in_progress`, `blocked`, `needs_review`, `done`, `deprecated` |
 
 When status becomes `blocked`, write `blocked_reason`, `missing_materials`, `next_action`, and `can_continue_with_limitations` in the status file. Do not hide blockers in chat only.
+
+After any meaningful phase, blocker, material, outline, or delivery-scope change, update `user-dashboard.md` so the user can see:
+
+- current phase and status
+- completed work
+- decisions waiting for user confirmation
+- missing materials and their impact
+- next recommended action
+- limited-continuation options, if any
 
 ## Decision Tree
 
@@ -61,17 +71,24 @@ When status becomes `blocked`, write `blocked_reason`, `missing_materials`, `nex
 
 - School and advisor requirements override default rules.
 - Do not write formal thesis body before materials are collected or the user explicitly confirms there are no more materials.
+- During intake, classify materials as `required`, `strongly_recommended`, or `optional`, and explain the effect of each missing required or strongly recommended material.
+- Use `content-decisions.md` when the user provides feature/module/experiment/appendix candidates, but do not block the main workflow only because no candidate content has been provided yet.
+- Record user-approved scope, material-unavailable, limited-continuation, standard-conflict, content-exclusion, outline, word-count, DOCX, appendix, and filename decisions in `user-decisions.md`.
+- User-facing workflow files are decision aids only. They must not weaken school/advisor requirements, evidence requirements, citation verification, figure provenance, or DOCX delivery checks.
 - Do not write formal thesis body before standards, sample/template analysis, and evidence building are complete.
 - When evidence is insufficient, trigger `stop_and_report`; do not guess missing facts.
+- When blocked, classify the issue as `hard_blocker`, `limited_continue`, or `user_choice_needed`, then provide user options and a recommended path.
 - `thesis-ai-spec.yaml` is the single entry point for thesis facts.
 - `figure-registry.yaml` is the single entry point for figures, tables, screenshots, and diagram sources.
 - Thesis prose may consume structured facts and evidence only; do not expand directly from README files or old notes.
+- Do not write content that `content-decisions.md` marks as rejected, excluded, or waiting for evidence.
 - Do not invent features, fields, APIs, test results, experiment data, or references.
 - AIGC style governance runs after the evidence chain is complete and may only improve academic expression, evidence density, and vague wording.
 - Thesis body must not expose AI workflow language.
 - Chapter 4 implementation must bind to real modules, screenshots, core code, SQL, or equivalent evidence.
 - System-design theses without an E-R diagram or equivalent data-design evidence cannot be marked complete.
-- Generate both the main thesis DOCX and appendix DOCX. Preserve diagram source, E-R source, flowchart source, and related assets in the appendix.
+- Generate both the main thesis DOCX and appendix DOCX. The main DOCX uses the built-in default thesis format; do not promise school-template reproduction. Preserve diagram source, E-R source, flowchart source, and related assets in the appendix.
+- Formula delivery must be explicit: `latex_text` preserves source formula text, while `formula_image` requires matching image assets.
 - Output filenames must use the thesis title, not generic names such as `final`, `draft`, `paper-final`, or `doc1`.
 - Literature workflow must be: build pool -> verify -> filter -> format -> generate verification checklist.
 
@@ -102,6 +119,10 @@ Before claiming delivery quality, check:
 - Main DOCX and appendix DOCX exist in `paper-output/`.
 - Screenshot, diagram, and image-map paths resolve on Windows.
 - Workflow logs reflect the current phase, status, blockers, and delivery limitations.
+- `user-dashboard.md` reflects the user-visible progress, pending decisions, missing materials, and next action.
+- `blocker-report.md` reflects the latest blocker, affected scope, user options, recommended path, and whether limited continuation is allowed.
+- `user-decisions.md` records user-approved choices that affect scope, missing-material handling, limitations, standards, outline, or delivery.
+- If `content-decisions.md` has active candidates, their approved/deferred/excluded status is consistent with the outline, thesis spec, and figure registry.
 
 ## Delivery Contract
 
