@@ -144,6 +144,15 @@ python scripts/workspace/build_sample_template_outputs.py result.json --target <
 
 详细规则和工作流见 [SKILL.md](SKILL.md)。
 
+### 素材稀缺与头脑风暴
+
+当材料摄入后发现素材过少（两个以上必需材料缺失、文献池为空、或证据仅停留在 README 级别），工作台不会直接阻断，而是走 `material-gap-handoff` 流程：
+
+1. **联网检索**：征得用户同意后，检索近五年同领域文献，写入 `paper-context/literature/web-suggested.md`（标记 `needs_check`），不直接加入参考文献。
+2. **头脑风暴**：征得用户同意后启动头脑风暴，写作思路只写入 `content-decisions.md` 的候选区，供用户审批取舍。
+3. 用户确认的进入大纲和正文；拒绝的标记 `discarded`，论文正文、spec、图表注册表都不会引用。
+4. 用户拒绝联网检索和头脑风暴的，记录到 `blocker-report.md`，在可见限制下继续推进。
+
 ---
 
 ## 架构
