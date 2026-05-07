@@ -47,6 +47,17 @@ ALIGNMENT_MAP = {
     "distribute": WD_ALIGN_PARAGRAPH.DISTRIBUTE,
 }
 
+LOW_FREQUENCY_ALLOWED = {
+    "title",
+    "abstract_heading_cn",
+    "abstract_heading_en",
+    "toc_heading",
+    "references_heading",
+    "ack_heading",
+    "appendix_heading",
+}
+
+
 def default_style_profile() -> dict[str, Any]:
     return {
         "styles": {
@@ -159,8 +170,38 @@ def deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]
     return merged
 
 
-def load_style_profile() -> dict[str, Any]:
-    return default_style_profile()
+def sample_style_override(sample_analysis: Path) -> dict[str, Any]:
+    payload = json.loads(sample_analysis.read_text(encoding="utf-8"))
+    source_styles = payload.get("styles") or {}
+    known_styles = default_style_profile()["styles"]
+    override: dict[str, Any] = {"styles": {}}
+
+    for category, style in source_styles.items():
+        if category not in known_styles or not isinstance(style, dict):
+            continue
+        sample_count = style.get("sample_count") or 0
+        if category in LOW_FREQUENCY_ALLOWED:
+            if sample_count < 1:
+                continue
+        elif sample_count < 3:
+            continue
+
+        clean_style = {
+            key: value
+            for key, value in style.items()
+            if key != "sample_count" and value not in (None, "")
+        }
+        if clean_style:
+            override["styles"][category] = clean_style
+
+    return override
+
+
+def load_style_profile(sample_analysis: Path | None = None) -> dict[str, Any]:
+    profile = default_style_profile()
+    if sample_analysis is None:
+        return profile
+    return deep_merge(profile, sample_style_override(sample_analysis))
 
 
 def apply_default_page_setup(section) -> None:
@@ -509,13 +550,14 @@ def parse_args() -> argparse.Namespace:
         default="latex_text",
         help="Keep formula source text or insert a matching formula image from image-map.",
     )
+    parser.add_argument("--sample-analysis", type=Path, default=None)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     image_map_path = args.image_map or args.legacy_image_map
-    profile = load_style_profile()
+    profile = load_style_profile(args.sample_analysis)
     image_map = load_image_map(image_map_path)
     args.target.parent.mkdir(parents=True, exist_ok=True)
     document = build_doc(args.source, image_map, profile, formula_mode=args.formula_mode)

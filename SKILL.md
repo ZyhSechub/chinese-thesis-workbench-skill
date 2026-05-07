@@ -22,7 +22,7 @@ Run the workflow in this order unless the user is only asking for a narrow inspe
 1. `intake_materials`: collect materials and record priority, gaps, missing impact, continuation limits, and user next steps in `paper-context/workflow/material-inventory.md`.
 2. `init_workspace`: initialize `thesis-ai-standard/`, `paper-context/`, and workflow logs.
 3. `resolve_standards`: fill `thesis-ai-standard/templates/standard-profile.yaml`.
-4. `analyze_sample_and_template`: normalize school template and sample-paper parser outputs into lightweight analysis reports, outline suggestions, and word budgets before drafting; parser output does not drive DOCX formatting.
+4. `analyze_sample_and_template`: normalize school template and sample-paper parser outputs into lightweight analysis reports, outline suggestions, and word budgets before drafting; parser output does not drive DOCX formatting unless the user explicitly selects sample-style generation via `--sample-analysis` or template-copy filling via `--from-template`.
 5. `build_evidence`: extract project facts into `paper-context/evidence/`.
 6. `stop_and_report`: stop or limit only the affected scope whenever evidence, standards, figures, citations, or DOCX delivery cannot be verified; record options in `blocker-report.md`.
 7. `build_thesis_spec`: fill `thesis-ai-standard/templates/thesis-ai-spec.yaml`.
@@ -30,7 +30,7 @@ Run the workflow in this order unless the user is only asking for a narrow inspe
 9. `confirm_outline`: confirm chapter structure, word counts, sample/template observations, and any available content emphasis/exclusion decisions before writing.
 10. `draft_chapters`: write only from confirmed structured facts and evidence.
 11. `produce_assets`: generate or collect figures, diagrams, screenshots, tables, and appendix sources.
-12. `produce_docx`: generate main DOCX and appendix DOCX into `paper-output/` using the built-in default thesis format.
+12. `produce_docx`: generate or edit the main DOCX and appendix DOCX into `paper-output/` using the recorded delivery path.
 13. `quality_gates`: run standards, evidence, reference, figure, DOCX, and AIGC checks.
 14. `delivery_report`: report outputs, limitations, remaining human decisions, and verification evidence.
 
@@ -87,7 +87,7 @@ After any meaningful phase, blocker, material, outline, or delivery-scope change
 - Thesis body must not expose AI workflow language.
 - Chapter 4 implementation must bind to real modules, screenshots, core code, SQL, or equivalent evidence.
 - System-design theses without an E-R diagram or equivalent data-design evidence cannot be marked complete.
-- Generate both the main thesis DOCX and appendix DOCX. The main DOCX uses the built-in default thesis format; do not promise school-template reproduction. Preserve diagram source, E-R source, flowchart source, and related assets in the appendix.
+- Generate both the main thesis DOCX and appendix DOCX. For strict school formatting, prefer template-copy filling via `scripts/docx/apply_textual_edits.py --from-template`; otherwise use default or sample-style generation. Do not promise full template reproduction. Preserve diagram source, E-R source, flowchart source, and related assets in the appendix.
 - Formula delivery must be explicit: `latex_text` preserves source formula text, while `formula_image` requires matching image assets.
 - Output filenames must use the thesis title, not generic names such as `final`, `draft`, `paper-final`, or `doc1`.
 - Literature workflow must be: build pool -> verify -> filter -> format -> generate verification checklist.
@@ -97,7 +97,7 @@ After any meaningful phase, blocker, material, outline, or delivery-scope change
 | Need | Resource |
 | --- | --- |
 | Intake and fast workflow | `references/workflow/intake.md`, `references/workflow/rapid-thesis-workflow.md` |
-| Workflow state and blockers | `references/workflow/workflow-state-management.md`, `references/workflow/stop-and-report.md` |
+| Workflow state, blockers, and sparse-material handoff | `references/workflow/workflow-state-management.md`, `references/workflow/stop-and-report.md`, `references/workflow/material-gap-handoff.md` |
 | Standards and template resolution | `references/standards/standards-and-template-resolution.md`, `references/standards/style-extraction.md`, `references/standards/default-style.md` |
 | Evidence extraction | `references/evidence/source-to-thesis-workflow.md`, `references/evidence/fact-extraction.md` |
 | Literature/PDF workflow | `references/evidence/literature-and-pdf-workflow.md`, `scripts/literature/` |

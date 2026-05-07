@@ -59,6 +59,16 @@ The script extracts comment author, date, text, and the nearest paragraph previe
 - For comments that require citations, first add `needs_source` unless the source is already verified.
 - For formatting comments, follow school template first and preserve unspecified formatting.
 
+## Text-Only Edit Mode
+
+When the user already has a formatted `.docx` draft and only asks for local paragraph text additions, deletions, or replacements, prefer text-only edit mode:
+
+```powershell
+python scripts/docx/apply_textual_edits.py draft.docx draft-edited.docx --replace "原文锚点" "新文本"
+```
+
+This mode only changes paragraph text. It does not rebuild styles, handle layout comments, or fill missing facts. If an anchor matches zero paragraphs or multiple paragraphs, stop and ask the user to confirm a unique anchor.
+
 ## Output Contract
 
 After revising by comments, return:

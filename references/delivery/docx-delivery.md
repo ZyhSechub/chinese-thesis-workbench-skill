@@ -1,6 +1,6 @@
 # DOCX Delivery
 
-用于将论文源稿转成 `.docx`。核心原则是：生成一份结构清晰、素材完整、可复制粘贴的默认格式 Word 文档，不复刻各学校的 Word 模板。
+用于将论文源稿转成 `.docx`，或在用户明确选择时填充学校模板副本、局部编辑已有初稿。核心原则是：能复制/编辑就保留原 DOCX 格式，不能复制时再生成结构清晰、素材完整、可复制粘贴的 Word 文档。
 
 ## Supported Scope
 
@@ -21,12 +21,33 @@
 - 代码块
 - 缺失素材占位
 
-如果学校要求严格模板格式，交付时告知用户：先用本工具生成内容完整的 DOCX，再由用户复制粘贴到学校官方模板中做最终排版。
+如果学校要求严格模板格式，优先选择 M3 模板副本填充；它复制学校模板文件后只插入或替换文本，仍需用户在 Word 中人工核对目录、封面、图表和页面布局。
+
+## Delivery Modes
+
+- M1 default style generation: creates a new DOCX from Markdown using built-in styles.
+- M2 sample style generation: creates a new DOCX from Markdown while applying high-confidence styles from `--sample-analysis`.
+- M3 template copy fill: copies a school template DOCX and fills text into the copy. Use this when school formatting fidelity matters most.
+- M4 existing draft edit: edits paragraph text in an existing draft with unique anchors.
+
+M3 does not rebuild the table of contents, replace figures/tables, or guarantee every cover-field placeholder will be found. The user should update the TOC in Word and manually verify cover fields, figures, tables, and page layout.
 
 ## Default Command
 
 ```powershell
 python scripts/docx/generate_thesis_docx.py thesis.md output/thesis.docx --image-map image-map.json
+```
+
+样文版式贴近生成：
+
+```powershell
+python scripts/docx/generate_thesis_docx.py thesis.md output/thesis.docx --sample-analysis paper-context/workflow/sample-docx-analysis.json
+```
+
+学校模板副本填充：
+
+```powershell
+python scripts/docx/apply_textual_edits.py --from-template school-template.docx --thesis-md paper-output/thesis.md --spec thesis-ai-standard/templates/thesis-ai-spec.yaml --out paper-output/thesis.docx
 ```
 
 公式默认保留为 LaTeX 文本，便于用户后续手动转 Word 公式：
@@ -41,7 +62,7 @@ python scripts/docx/generate_thesis_docx.py thesis.md output/thesis.docx --formu
 python scripts/docx/generate_thesis_docx.py thesis.md output/thesis.docx --image-map image-map.json --formula-mode formula_image
 ```
 
-生成器不提供学校模板匹配参数。即使用户提供学校模板，也不应承诺自动匹配学校模板格式。
+生成器不提供学校模板匹配参数。样文版式贴近只是高置信样式值合并，不是模板复刻。学校模板应走 `--from-template` 副本填充路径。
 
 ## Asset Rules
 

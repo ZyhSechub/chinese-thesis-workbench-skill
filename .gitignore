@@ -24,3 +24,9 @@ Thumbs.db
 
 # Workspace output (generated files, not source)
 /workspace/
+
+# Local agent/browser state and scratch plans
+/.claude/
+/.playwright-mcp/
+/tmp/
+/docs/superpowers/plans/
